@@ -1,0 +1,370 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+      <Schema Namespace="BracketDBModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="People">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Name" Type="nchar" MaxLength="20" Nullable="false" />
+          <Property Name="PhoneNumber" Type="nchar" MaxLength="13" />
+          <Property Name="Email" Type="nchar" MaxLength="30" />
+        </EntityType>
+        <EntityType Name="PeopleTeams">
+          <Key>
+            <PropertyRef Name="Team_ID" />
+            <PropertyRef Name="People_ID" />
+          </Key>
+          <Property Name="Team_ID" Type="int" Nullable="false" />
+          <Property Name="People_ID" Type="int" Nullable="false" />
+          <Property Name="Role" Type="nchar" MaxLength="20" />
+        </EntityType>
+        <EntityType Name="Teams">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" Nullable="false" />
+          <Property Name="TeamName" Type="nchar" MaxLength="20" />
+        </EntityType>
+        <EntityType Name="Tournament">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" Nullable="false" />
+          <Property Name="Name" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Sport" Type="nchar" MaxLength="20" Nullable="false" />
+          <Property Name="Date" Type="datetime" />
+          <Property Name="Description" Type="nvarchar(max)" />
+          <Property Name="Organizer_ID" Type="int" Nullable="false" />
+          <Property Name="Location" Type="nchar" MaxLength="20" />
+        </EntityType>
+        <EntityType Name="TournamentsTeams">
+          <Key>
+            <PropertyRef Name="Tournament_ID" />
+            <PropertyRef Name="Team_ID" />
+          </Key>
+          <Property Name="Tournament_ID" Type="int" Nullable="false" />
+          <Property Name="Team_ID" Type="int" Nullable="false" />
+          <Property Name="Seed" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Placement" Type="int" />
+        </EntityType>
+        <Association Name="FK_Table_People">
+          <End Role="People" Type="Self.People" Multiplicity="1" />
+          <End Role="PeopleTeams" Type="Self.PeopleTeams" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="People">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="PeopleTeams">
+              <PropertyRef Name="People_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Table_Teams">
+          <End Role="Teams" Type="Self.Teams" Multiplicity="1" />
+          <End Role="PeopleTeams" Type="Self.PeopleTeams" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Teams">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="PeopleTeams">
+              <PropertyRef Name="Team_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Tournament_People">
+          <End Role="People" Type="Self.People" Multiplicity="1" />
+          <End Role="Tournament" Type="Self.Tournament" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="People">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Tournament">
+              <PropertyRef Name="Organizer_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_TournamentsTeams_Teams">
+          <End Role="Teams" Type="Self.Teams" Multiplicity="1" />
+          <End Role="TournamentsTeams" Type="Self.TournamentsTeams" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Teams">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="TournamentsTeams">
+              <PropertyRef Name="Team_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_TournamentsTeams_Tournaments">
+          <End Role="Tournament" Type="Self.Tournament" Multiplicity="1" />
+          <End Role="TournamentsTeams" Type="Self.TournamentsTeams" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Tournament">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="TournamentsTeams">
+              <PropertyRef Name="Tournament_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="BracketDBModelStoreContainer">
+          <EntitySet Name="People" EntityType="Self.People" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="PeopleTeams" EntityType="Self.PeopleTeams" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Teams" EntityType="Self.Teams" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Tournament" EntityType="Self.Tournament" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="TournamentsTeams" EntityType="Self.TournamentsTeams" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK_Table_People" Association="Self.FK_Table_People">
+            <End Role="People" EntitySet="People" />
+            <End Role="PeopleTeams" EntitySet="PeopleTeams" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Table_Teams" Association="Self.FK_Table_Teams">
+            <End Role="Teams" EntitySet="Teams" />
+            <End Role="PeopleTeams" EntitySet="PeopleTeams" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Tournament_People" Association="Self.FK_Tournament_People">
+            <End Role="People" EntitySet="People" />
+            <End Role="Tournament" EntitySet="Tournament" />
+          </AssociationSet>
+          <AssociationSet Name="FK_TournamentsTeams_Teams" Association="Self.FK_TournamentsTeams_Teams">
+            <End Role="Teams" EntitySet="Teams" />
+            <End Role="TournamentsTeams" EntitySet="TournamentsTeams" />
+          </AssociationSet>
+          <AssociationSet Name="FK_TournamentsTeams_Tournaments" Association="Self.FK_TournamentsTeams_Tournaments">
+            <End Role="Tournament" EntitySet="Tournament" />
+            <End Role="TournamentsTeams" EntitySet="TournamentsTeams" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="BracketDBModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="Person">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" MaxLength="20" FixedLength="true" Unicode="true" Nullable="false" />
+          <Property Name="PhoneNumber" Type="String" MaxLength="13" FixedLength="true" Unicode="true" />
+          <Property Name="Email" Type="String" MaxLength="30" FixedLength="true" Unicode="true" />
+          <NavigationProperty Name="PeopleTeams" Relationship="Self.FK_Table_People" FromRole="People" ToRole="PeopleTeams" />
+          <NavigationProperty Name="Tournaments" Relationship="Self.FK_Tournament_People" FromRole="People" ToRole="Tournament" />
+        </EntityType>
+        <EntityType Name="PeopleTeam">
+          <Key>
+            <PropertyRef Name="Team_ID" />
+            <PropertyRef Name="People_ID" />
+          </Key>
+          <Property Name="Team_ID" Type="Int32" Nullable="false" />
+          <Property Name="People_ID" Type="Int32" Nullable="false" />
+          <Property Name="Role" Type="String" MaxLength="20" FixedLength="true" Unicode="true" />
+          <NavigationProperty Name="Person" Relationship="Self.FK_Table_People" FromRole="PeopleTeams" ToRole="People" />
+          <NavigationProperty Name="Team" Relationship="Self.FK_Table_Teams" FromRole="PeopleTeams" ToRole="Teams" />
+        </EntityType>
+        <EntityType Name="Team">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" />
+          <Property Name="TeamName" Type="String" MaxLength="20" FixedLength="true" Unicode="true" />
+          <NavigationProperty Name="PeopleTeams" Relationship="Self.FK_Table_Teams" FromRole="Teams" ToRole="PeopleTeams" />
+          <NavigationProperty Name="TournamentsTeams" Relationship="Self.FK_TournamentsTeams_Teams" FromRole="Teams" ToRole="TournamentsTeams" />
+        </EntityType>
+        <EntityType Name="Tournament">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" />
+          <Property Name="Name" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Sport" Type="String" MaxLength="20" FixedLength="true" Unicode="true" Nullable="false" />
+          <Property Name="Date" Type="DateTime" Precision="3" />
+          <Property Name="Description" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Organizer_ID" Type="Int32" Nullable="false" />
+          <Property Name="Location" Type="String" MaxLength="20" FixedLength="true" Unicode="true" />
+          <NavigationProperty Name="Person" Relationship="Self.FK_Tournament_People" FromRole="Tournament" ToRole="People" />
+          <NavigationProperty Name="TournamentsTeams" Relationship="Self.FK_TournamentsTeams_Tournaments" FromRole="Tournament" ToRole="TournamentsTeams" />
+        </EntityType>
+        <EntityType Name="TournamentsTeam">
+          <Key>
+            <PropertyRef Name="Tournament_ID" />
+            <PropertyRef Name="Team_ID" />
+          </Key>
+          <Property Name="Tournament_ID" Type="Int32" Nullable="false" />
+          <Property Name="Team_ID" Type="Int32" Nullable="false" />
+          <Property Name="Seed" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Placement" Type="Int32" />
+          <NavigationProperty Name="Team" Relationship="Self.FK_TournamentsTeams_Teams" FromRole="TournamentsTeams" ToRole="Teams" />
+          <NavigationProperty Name="Tournament" Relationship="Self.FK_TournamentsTeams_Tournaments" FromRole="TournamentsTeams" ToRole="Tournament" />
+        </EntityType>
+        <Association Name="FK_Table_People">
+          <End Role="People" Type="Self.Person" Multiplicity="1" />
+          <End Role="PeopleTeams" Type="Self.PeopleTeam" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="People">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="PeopleTeams">
+              <PropertyRef Name="People_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Tournament_People">
+          <End Role="People" Type="Self.Person" Multiplicity="1" />
+          <End Role="Tournament" Type="Self.Tournament" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="People">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Tournament">
+              <PropertyRef Name="Organizer_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Table_Teams">
+          <End Role="Teams" Type="Self.Team" Multiplicity="1" />
+          <End Role="PeopleTeams" Type="Self.PeopleTeam" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Teams">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="PeopleTeams">
+              <PropertyRef Name="Team_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_TournamentsTeams_Teams">
+          <End Role="Teams" Type="Self.Team" Multiplicity="1" />
+          <End Role="TournamentsTeams" Type="Self.TournamentsTeam" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Teams">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="TournamentsTeams">
+              <PropertyRef Name="Team_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_TournamentsTeams_Tournaments">
+          <End Role="Tournament" Type="Self.Tournament" Multiplicity="1" />
+          <End Role="TournamentsTeams" Type="Self.TournamentsTeam" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Tournament">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="TournamentsTeams">
+              <PropertyRef Name="Tournament_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="BracketDBEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="People" EntityType="Self.Person" />
+          <EntitySet Name="PeopleTeams" EntityType="Self.PeopleTeam" />
+          <EntitySet Name="Teams" EntityType="Self.Team" />
+          <EntitySet Name="Tournaments" EntityType="Self.Tournament" />
+          <EntitySet Name="TournamentsTeams" EntityType="Self.TournamentsTeam" />
+          <AssociationSet Name="FK_Table_People" Association="Self.FK_Table_People">
+            <End Role="People" EntitySet="People" />
+            <End Role="PeopleTeams" EntitySet="PeopleTeams" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Tournament_People" Association="Self.FK_Tournament_People">
+            <End Role="People" EntitySet="People" />
+            <End Role="Tournament" EntitySet="Tournaments" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Table_Teams" Association="Self.FK_Table_Teams">
+            <End Role="Teams" EntitySet="Teams" />
+            <End Role="PeopleTeams" EntitySet="PeopleTeams" />
+          </AssociationSet>
+          <AssociationSet Name="FK_TournamentsTeams_Teams" Association="Self.FK_TournamentsTeams_Teams">
+            <End Role="Teams" EntitySet="Teams" />
+            <End Role="TournamentsTeams" EntitySet="TournamentsTeams" />
+          </AssociationSet>
+          <AssociationSet Name="FK_TournamentsTeams_Tournaments" Association="Self.FK_TournamentsTeams_Tournaments">
+            <End Role="Tournament" EntitySet="Tournaments" />
+            <End Role="TournamentsTeams" EntitySet="TournamentsTeams" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="BracketDBModelStoreContainer" CdmEntityContainer="BracketDBEntities">
+          <EntitySetMapping Name="People">
+            <EntityTypeMapping TypeName="BracketDBModel.Person">
+              <MappingFragment StoreEntitySet="People">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="PhoneNumber" ColumnName="PhoneNumber" />
+                <ScalarProperty Name="Email" ColumnName="Email" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="PeopleTeams">
+            <EntityTypeMapping TypeName="BracketDBModel.PeopleTeam">
+              <MappingFragment StoreEntitySet="PeopleTeams">
+                <ScalarProperty Name="Team_ID" ColumnName="Team_ID" />
+                <ScalarProperty Name="People_ID" ColumnName="People_ID" />
+                <ScalarProperty Name="Role" ColumnName="Role" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Teams">
+            <EntityTypeMapping TypeName="BracketDBModel.Team">
+              <MappingFragment StoreEntitySet="Teams">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="TeamName" ColumnName="TeamName" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Tournaments">
+            <EntityTypeMapping TypeName="BracketDBModel.Tournament">
+              <MappingFragment StoreEntitySet="Tournament">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Sport" ColumnName="Sport" />
+                <ScalarProperty Name="Date" ColumnName="Date" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="Organizer_ID" ColumnName="Organizer_ID" />
+                <ScalarProperty Name="Location" ColumnName="Location" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="TournamentsTeams">
+            <EntityTypeMapping TypeName="BracketDBModel.TournamentsTeam">
+              <MappingFragment StoreEntitySet="TournamentsTeams">
+                <ScalarProperty Name="Tournament_ID" ColumnName="Tournament_ID" />
+                <ScalarProperty Name="Team_ID" ColumnName="Team_ID" />
+                <ScalarProperty Name="Seed" ColumnName="Seed" />
+                <ScalarProperty Name="Placement" ColumnName="Placement" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="true" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>

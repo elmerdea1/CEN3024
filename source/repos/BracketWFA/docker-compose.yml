@@ -1,0 +1,8 @@
+version: '3.4'
+
+services:
+  bracketwebapp:
+    image: ${DOCKER_REGISTRY}bracketwebapp
+    build:
+      context: .
+      dockerfile: BracketWebApp\Dockerfile
